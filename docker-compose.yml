@@ -1,0 +1,126 @@
+version: '2'
+services:
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="admin-secret";'
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: PLAIN
+############################################
+  zookeeper-1:
+    build: ./build-zookeeper/
+    environment:
+      SERVER_1: zookeeper-1
+      SERVER_2: zookeeper-2
+      SERVER_3: zookeeper-3
+      MY_ID: 1
+    restart: always
+    volumes: 
+      - ./data/zookeeper/1:/opt/data/zookeeper
+      - ./config-zookeeper/zoo.cfg:/opt/zookeeper/conf/zoo.cfg
+      - ./config-zookeeper/myid-1:/opt/data/zookeeper/myid
+############################################
+
+  zookeeper-2:
+    build: ./build-zookeeper/
+    environment:
+      SERVER_1: zookeeper-1
+      SERVER_2: zookeeper-2
+      SERVER_3: zookeeper-3
+      MY_ID: 2
+    restart: always
+    volumes: 
+      - ./data/zookeeper/2:/opt/data/zookeeper
+      - ./config-zookeeper/zoo.cfg:/opt/zookeeper/conf/zoo.cfg
+      - ./config-zookeeper/myid-2:/opt/data/zookeeper/myid
+
+############################################
+
+  zookeeper-3:
+    build: ./build-zookeeper/
+    environment:
+      SERVER_1: zookeeper-1
+      SERVER_2: zookeeper-2
+      SERVER_3: zookeeper-3
+      MY_ID: 3
+    restart: always
+    volumes: 
+      - ./data/zookeeper/3:/opt/data/zookeeper
+      - ./config-zookeeper/zoo.cfg:/opt/zookeeper/conf/zoo.cfg
+      - ./config-zookeeper/myid-3:/opt/data/zookeeper/myid
+
+############################################
+  kafka-1:
+    build: ./build-kafka/
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./config-kafka/kafka_server_jaas.conf:/opt/kafka/config/kafka_server_jaas.conf
+      - ./config-kafka/admin.conf:/opt/kafka/config/admin.conf
+      - ./data/kafka/1:/kafka
+
+      - ./config-kafka/broker1.conf:/opt/kafka/config/server.properties
+    environment:
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/opt/kafka/config/kafka_server_jaas.conf"
+    links:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+  ############################################
+  kafka-2:
+    build: ./build-kafka/
+    ports:
+      - "19092:19092"
+    volumes:
+      - ./config-kafka/kafka_server_jaas.conf:/opt/kafka/config/kafka_server_jaas.conf
+      - ./config-kafka/admin.conf:/opt/kafka/config/admin.conf
+      - ./data/kafka/2:/kafka
+      - ./config-kafka/broker2.conf:/opt/kafka/config/server.properties
+    environment:
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/opt/kafka/config/kafka_server_jaas.conf"
+
+    links:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+
+  ############################################
+  kafka-3:
+    build: ./build-kafka/
+    ports:
+      - "29092:29092"
+    volumes:
+      - ./config-kafka/kafka_server_jaas.conf:/opt/kafka/config/kafka_server_jaas.conf
+      - ./config-kafka/admin.conf:/opt/kafka/config/admin.conf
+      - ./data/kafka/3:/kafka
+      - ./config-kafka/broker3.conf:/opt/kafka/config/server.properties
+    environment:
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/opt/kafka/config/kafka_server_jaas.conf"
+
+    links:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+
