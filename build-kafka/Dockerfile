@@ -1,4 +1,4 @@
-FROM ubi8/ubi
+FROM registry.redhat.io/ubi8/ubi
 ARG kafka_version=3.5.1
 ARG scala_version=2.13
 ARG vcs_ref=unspecified

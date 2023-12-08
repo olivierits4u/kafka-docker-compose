@@ -19,11 +19,6 @@ services:
 ############################################
   zookeeper-1:
     build: ./build-zookeeper/
-    environment:
-      SERVER_1: zookeeper-1
-      SERVER_2: zookeeper-2
-      SERVER_3: zookeeper-3
-      MY_ID: 1
     restart: always
     volumes: 
       - ./data/zookeeper/1:/opt/data/zookeeper
@@ -33,11 +28,6 @@ services:
 
   zookeeper-2:
     build: ./build-zookeeper/
-    environment:
-      SERVER_1: zookeeper-1
-      SERVER_2: zookeeper-2
-      SERVER_3: zookeeper-3
-      MY_ID: 2
     restart: always
     volumes: 
       - ./data/zookeeper/2:/opt/data/zookeeper
@@ -48,11 +38,6 @@ services:
 
   zookeeper-3:
     build: ./build-zookeeper/
-    environment:
-      SERVER_1: zookeeper-1
-      SERVER_2: zookeeper-2
-      SERVER_3: zookeeper-3
-      MY_ID: 3
     restart: always
     volumes: 
       - ./data/zookeeper/3:/opt/data/zookeeper

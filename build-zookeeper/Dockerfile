@@ -1,4 +1,4 @@
-FROM ubi8/ubi
+FROM registry.redhat.io/ubi8/ubi
 RUN  yum update -y && yum install -y java-11-openjdk jq curl
 
 
@@ -12,4 +12,4 @@ RUN touch /opt/data/zookeeper/myid && echo 1 > /opt/data/zookeeper/myid
 RUN cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg 
 ADD start-zk.sh /opt/zookeeper/bin/start-zk.sh 
 RUN chmod +x  /opt/zookeeper/bin/start-zk.sh
-CMD  /opt/zookeeper/bin/start-zk.sh
+CMD  /opt/zookeeper/bin/zkServer.sh start-foreground
